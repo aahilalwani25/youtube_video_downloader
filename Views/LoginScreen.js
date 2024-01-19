@@ -14,6 +14,7 @@ import {WEB_CLIENT_ID} from '@env';
 import LoginController from '../Controllers/LoginController';
 import styles from '../global/styles/styles';
 import HeaderText from '../components/HeaderText';
+import ToastMessage from '../components/ToastMessage';
 //console.log(WEB_CLIENT_ID)
 GoogleSignin.configure({
   webClientId: WEB_CLIENT_ID,
@@ -36,7 +37,26 @@ class LoginScreen extends Component {
 
     this.state = {
       isGoogleButtonLoading: false,
+      toastMessageShow: false,
+      messageType: '', // success / warning / error
+      messageContent: '',
     };
+  }
+
+  // Function to show toast message
+  showToastMessage(type, content) {
+    this.setState({
+      messageType: type,
+      messageContent: content,
+      toastMessageShow: true,
+    });
+
+    // Hide the toast message after 3 seconds
+    setTimeout(() => {
+      this.setState({
+        toastMessageShow: false,
+      });
+    }, 3000);
   }
 
   render() {
@@ -48,21 +68,39 @@ class LoginScreen extends Component {
             source={require('../assets/images/youtube_downloader_logo_2.png')}
           />
 
-          <HeaderText styles={{fontWeight: 'bold', textAlign:"center"}} text="YOUTUBE VIDEO DOWNLOADER"/>
+          <HeaderText
+            styles={{fontWeight: 'bold', textAlign: 'center'}}
+            text="YOUTUBE VIDEO DOWNLOADER"
+          />
         </View>
 
         {/* Login buttons */}
         <View style={{flex: 2, justifyContent: 'center', alignItems: 'center'}}>
           <View>
             <TouchableOpacity
-              onPress={() => {
-                this.loginController.signinWithGoogle(
-                  GoogleSignin,
-                  statusCodes,
-                );
+              onPress={async () => {
+                this.loginController
+                  .signinWithGoogle(GoogleSignin, statusCodes)
+                  .then(message => {
+                    if (message == 'success') {
+                      if (message === 'success') {
+                        this.showToastMessage(
+                          'success',
+                          'Successfully logged in',
+                        );
+                      }
+                    }
+                  });
                 this.setState({
-                  isGoogleButtonLoading:true
-                })
+                  isGoogleButtonLoading: true,
+                });
+                setTimeout(
+                  () =>
+                    this.setState({
+                      isGoogleButtonLoading: false,
+                    }),
+                  2000,
+                );
               }}
               style={{
                 flexDirection: 'row',
@@ -89,6 +127,17 @@ class LoginScreen extends Component {
                 </View>
               )}
             </TouchableOpacity>
+
+            {this.state.toastMessageShow ? (
+              <View style={{alignItems: 'center'}}>
+                <ToastMessage
+                  type={this.state.messageType}
+                  message={this.state.messageContent}
+                />
+              </View>
+            ) : (
+              <View></View>
+            )}
           </View>
         </View>
       </View>
