@@ -19,6 +19,7 @@ import ToastMessage from '../components/ToastMessage';
 GoogleSignin.configure({
   webClientId: WEB_CLIENT_ID,
   offlineAccess: true,
+  
 });
 
 //steps:
