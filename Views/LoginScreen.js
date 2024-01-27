@@ -11,7 +11,7 @@ import {
   statusCodes,
 } from '@react-native-google-signin/google-signin';
 import {WEB_CLIENT_ID} from '@env';
-import LoginController from '../Controllers/LoginController';
+import AuthController from '../Controllers/AuthController.mjs';
 import styles from '../global/styles/styles';
 import HeaderText from '../components/HeaderText';
 import ToastMessage from '../components/ToastMessage';
@@ -19,7 +19,7 @@ import ToastMessage from '../components/ToastMessage';
 GoogleSignin.configure({
   webClientId: WEB_CLIENT_ID,
   offlineAccess: true,
-  
+
 });
 
 //steps:
@@ -34,7 +34,7 @@ GoogleSignin.configure({
 class LoginScreen extends Component {
   constructor(props) {
     super(props);
-    this.loginController = new LoginController();
+    this.loginController = new AuthController();
 
     this.state = {
       isGoogleButtonLoading: false,
