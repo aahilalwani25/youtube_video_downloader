@@ -1,9 +1,9 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import GoogleUser from '../Model/GoogleUsers.js';
-//import axios from 'axios';
+import {GoogleSignin} from '@react-native-google-signin/google-signin';
+import axios from 'axios';
+import process from 'process';
 
-
-export default class AuthController {
+class AuthController {
   async signOut(google_sign_in, statusCodes) {
     try {
       await google_sign_in.revokeAccess();
@@ -30,46 +30,45 @@ export default class AuthController {
     AsyncStorage.setItem('photo', userInfo.user.photo);
   }
 
-  async storeUserInfoIntoDb(email, name, photo, idToken) {
-    await GoogleUser.findOne({
-      where: {
-        email,
-      },
-    }).then(async value => {
-      if (value.email) {
-        throw new Error('This account has been registered before');
-      } else {
-        const google_user = await GoogleUser.create({
-          name,
-          email,
-          photo,
-          idToken,
-        });
-
-        google_user.save();
-      }
-    });
-
-    return {
-      auth: true,
-      user: {
-        name: name,
-        email: email,
-        photo: photo,
-        idToken: idToken,
-      },
-    };
-  }
-
   async signinWithGoogle(google_sign_in, statusCodes) {
     let userInfo = null;
     try {
       await google_sign_in.hasPlayServices();
       userInfo = await google_sign_in.signIn();
-      
-      //store user info in db by api call
-      //axios.post('')
-      return 'success';
+
+      //store user info of google in db by api call
+      let res = await axios.post(
+        `http://${process.env.IP_ADDRESS}:${process.env.PORT}/signin/google/`,
+        {
+          idToken: userInfo.idToken,
+          name: userInfo.user.name,
+          email: userInfo.user.email,
+          photo: userInfo.user.photo,
+        },
+      );
+
+      if (res.status === 201) {
+        res = res.data;
+        this.storeUserInfoInLocalStorage(userInfo);
+        return {
+          message: res['message'],
+          res,
+        };
+      }
+
+      if (res.status === 400 || res.status === 500) {
+        res = res.data;
+        return {
+          res,
+          error: true,
+        };
+      }
+
+      res = res.data;
+
+      return {
+        error: true,
+      };
     } catch (error) {
       console.log(error);
       if (error.code === statusCodes.SIGN_IN_CANCELLED) {
@@ -88,3 +87,5 @@ export default class AuthController {
     }
   }
 }
+
+export default AuthController;

@@ -3,9 +3,10 @@ import {NavigationContainer} from '@react-navigation/native';
 import {createStackNavigator} from '@react-navigation/stack';
 import LoginScreen from './Views/LoginScreen';
 import 'react-native-gesture-handler';
-import AuthController from './Controllers/AuthController.mjs';
+import AuthController from './Controller/AuthController';
 import Dashboard from './Views/Dashboard';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { GoogleSignin } from '@react-native-google-signin/google-signin';
 
 const Stack = createStackNavigator();
 
@@ -33,7 +34,7 @@ class App extends Component {
   render() {
     return (
       <NavigationContainer>
-        <Stack.Navigator initialRouteName={this.isSignedIn()?"dashboard":"loginScreen"}>
+        <Stack.Navigator initialRouteName={this.authController.isSignedIn(GoogleSignin)?"loginScreen":"loginScreen"}>
           <Stack.Screen
             name="loginScreen"
             component={LoginScreen}

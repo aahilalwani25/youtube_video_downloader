@@ -11,7 +11,7 @@ import {
   statusCodes,
 } from '@react-native-google-signin/google-signin';
 import {WEB_CLIENT_ID} from '@env';
-import AuthController from '../Controllers/AuthController.mjs';
+import AuthController from '../Controller/AuthController';
 import styles from '../global/styles/styles';
 import HeaderText from '../components/HeaderText';
 import ToastMessage from '../components/ToastMessage';
@@ -80,18 +80,20 @@ class LoginScreen extends Component {
           <View>
             <TouchableOpacity
               onPress={async () => {
+                //this.loginController.signOut(GoogleSignin)
                 this.loginController
                   .signinWithGoogle(GoogleSignin, statusCodes)
-                  .then(message => {
-                    if (message == 'success') {
-                      if (message === 'success') {
-                        this.showToastMessage(
+                  .then(res => {
+                    console.log(res)
+                    if (res.message == "Signed up Successfully" || res.message=="Logged in") {
+                      this.showToastMessage(
                           'success',
-                          'Successfully logged in',
+                          res.message,
                         );
-                      }
+                      
                     }
                   });
+                
                 this.setState({
                   isGoogleButtonLoading: true,
                 });
