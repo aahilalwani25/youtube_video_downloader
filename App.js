@@ -6,46 +6,53 @@ import 'react-native-gesture-handler';
 import AuthController from './Controller/AuthController';
 import Dashboard from './Views/Dashboard';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { GoogleSignin } from '@react-native-google-signin/google-signin';
+import {GoogleSignin} from '@react-native-google-signin/google-signin';
 
 const Stack = createStackNavigator();
 
 class App extends Component {
-
-  constructor(props){
+  constructor(props) {
     super(props);
 
-    this.authController= new AuthController();
-    this.state={
-      "idToken":null,
-      "email":null,
-      "name":null,
-      "photo":null,
-    }
-
+    this.authController = new AuthController();
+    this.state = {
+      idToken: null,
+      email: null,
+      name: null,
+      photo: null,
+      isSignedIn: false,
+    };
   }
 
-  async getCredentials(){
-    if(await this.authController.isSignedIn()){
-      AsyncStorage.multiGet(["email","name"])
+  async getCredentials() {
+    if (await this.authController.isSignedIn()) {
+      AsyncStorage.multiGet(['email', 'name', 'idToken', 'photo']);
     }
   }
-  
+
   render() {
+    this.authController
+      .isSignedIn(GoogleSignin)
+      .then(val => this.setState({isSignedIn: val}));
     return (
       <NavigationContainer>
-        <Stack.Navigator initialRouteName={this.authController.isSignedIn(GoogleSignin)?"loginScreen":"loginScreen"}>
+        <Stack.Navigator
+          initialRouteName={
+            this.state.isSignedIn ? 'dashboard' : 'loginScreen'
+          }>
           <Stack.Screen
             name="loginScreen"
             component={LoginScreen}
             options={{headerShown: false}}
           />
           <Stack.Screen
-          name='dashboard'
-          component={Dashboard}
-          options={{
-            headerShown:false
-          }}/>
+            name="dashboard"
+            component={Dashboard}
+            
+            options={{
+              headerShown: false,
+            }}
+          />
         </Stack.Navigator>
       </NavigationContainer>
     );

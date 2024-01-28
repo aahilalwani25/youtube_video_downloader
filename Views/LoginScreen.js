@@ -19,7 +19,6 @@ import ToastMessage from '../components/ToastMessage';
 GoogleSignin.configure({
   webClientId: WEB_CLIENT_ID,
   offlineAccess: true,
-
 });
 
 //steps:
@@ -84,26 +83,38 @@ class LoginScreen extends Component {
                 this.loginController
                   .signinWithGoogle(GoogleSignin, statusCodes)
                   .then(res => {
-                    console.log(res)
-                    if (res.message == "Signed up Successfully" || res.message=="Logged in") {
-                      this.showToastMessage(
-                          'success',
-                          res.message,
-                        );
-                      
+                    console.log(res);
+                    if (
+                      res.message == 'Signed up Successfully' ||
+                      res.message == 'Logged in'
+                    ) {
+                      this.showToastMessage('success', res.message);
+                      this.setState({
+                        isGoogleButtonLoading: true,
+                      });
+                      setTimeout(
+                        () =>
+                          this.setState({
+                            isGoogleButtonLoading: false,
+                          }),
+                        2000,
+                      );
+                      this.props.navigation.navigate('dashboard',res);
                     }
-                  });
-                
-                this.setState({
-                  isGoogleButtonLoading: true,
-                });
-                setTimeout(
-                  () =>
+                  })
+                  .catch(err => {
+                    this.showToastMessage('error', err);
                     this.setState({
-                      isGoogleButtonLoading: false,
-                    }),
-                  2000,
-                );
+                      isGoogleButtonLoading: true,
+                    });
+                    setTimeout(
+                      () =>
+                        this.setState({
+                          isGoogleButtonLoading: false,
+                        }),
+                      2000,
+                    );
+                  });
               }}
               style={{
                 flexDirection: 'row',

@@ -50,18 +50,12 @@ class AuthController {
       if (res.status === 201) {
         res = res.data;
         this.storeUserInfoInLocalStorage(userInfo);
-        return {
-          message: res['message'],
-          res,
-        };
+        return res;
       }
 
       if (res.status === 400 || res.status === 500) {
         res = res.data;
-        return {
-          res,
-          error: true,
-        };
+        return res;
       }
 
       res = res.data;
