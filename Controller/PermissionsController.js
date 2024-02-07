@@ -1,5 +1,9 @@
+import { PermissionsAndroid } from "react-native";
+
 export default class PermissionsController {
-  async requestPermission(PermissionsAndroid) {
+
+  async requestPermission() {
+    
     let granted = await PermissionsAndroid.request(
       PermissionsAndroid.PERMISSIONS.WRITE_EXTERNAL_STORAGE,
       {

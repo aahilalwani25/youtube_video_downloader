@@ -19,7 +19,6 @@ import {
   showToastMessageFalse,
   showToastMessageTrue,
 } from '../Redux/Login/action';
-import * as authActions from '../Redux/Login/action';
 import {WEB_CLIENT_ID} from '@env';
 import AuthController from '../Controller/AuthController';
 import styles from '../global/styles/styles';
@@ -36,20 +35,18 @@ class LoginScreen extends Component {
   constructor(props) {
     super(props);
     this.loginController = new AuthController();
-
-    //binding action creators (authActions imported)
-    //this.actions = bindActionCreators(authActions, this.props.dispatch);
+    
   }
 
   // Function to show toast message
   showToastMessage(type, content) {
-    changeMessageType(type);
-    changeMessageContent(content);
-    showToastMessageTrue();
+    this.props.changeMessageType(type);
+    this.props.changeMessageContent(content);
+    this.props.showToastMessageTrue();
 
     // Hide the toast message after 3 seconds
     setTimeout(() => {
-      showToastMessageFalse();
+      this.props.showToastMessageFalse();
     }, 2000);
   }
 
@@ -70,7 +67,7 @@ class LoginScreen extends Component {
           <View>
             <TouchableOpacity
               onPress={async () => {
-                googleButtonLoadingTrue();
+                this.props.googleButtonLoadingTrue();
                 this.loginController
                   .signinWithGoogle(GoogleSignin, statusCodes)
                   .then(res => {
@@ -81,12 +78,12 @@ class LoginScreen extends Component {
                     ) {
                       this.showToastMessage('success', res.message);
                       this.props.navigation.navigate('dashboard', res);
-                      googleButtonLoadingFalse();
+                      this.props.googleButtonLoadingFalse();
                     }
                   })
                   .catch(err => {
                     this.showToastMessage('error', err);
-                    googleButtonLoadingFalse();
+                    this.props.googleButtonLoadingFalse();
                   });
               }}
               style={{
@@ -132,10 +129,10 @@ class LoginScreen extends Component {
 
 //state of the component is defined here
 const mapStateToProps = state => ({
-  isGoogleButtonLoading: state.isGoogleButtonLoading,
-  toastMessageShow: state.toastMessageShow,
-  messageType: state.messageType,
-  messageContent: state.messageContent,
+  isGoogleButtonLoading: state.LoginReducer.isGoogleButtonLoading,
+  toastMessageShow: state.LoginReducer.toastMessageShow,
+  messageType: state.LoginReducer.messageType,
+  messageContent: state.LoginReducer.messageContent,
 });
 
 //all the actions is dispatched here

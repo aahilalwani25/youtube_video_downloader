@@ -4,7 +4,7 @@ import {createStackNavigator} from '@react-navigation/stack';
 import LoginScreen from './Views/LoginScreen';
 import 'react-native-gesture-handler';
 import AuthController from './Controller/AuthController';
-import Dashboard from './Views/Dashboard';
+import Home from './Views/Home';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {GoogleSignin} from '@react-native-google-signin/google-signin';
 
@@ -47,7 +47,7 @@ class App extends Component {
           />
           <Stack.Screen
             name="dashboard"
-            component={Dashboard}
+            component={Home}
             
             options={{
               headerShown: false,

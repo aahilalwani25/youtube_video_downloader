@@ -18,7 +18,7 @@ export default class ProfileCard extends React.Component{
                 objectFit: 'contain',
                 borderRadius: 50,
                 //alignSelf: 'flex-end',
-                right: 10,
+                //right: 10,
               }}
             />
         );

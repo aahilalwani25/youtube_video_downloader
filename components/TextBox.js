@@ -4,19 +4,16 @@ import {View, Text, TextInput} from 'react-native';
 class TextBox extends Component {
   constructor(props) {
     super(props);
-    this.state = {
-      link: this.props.link,
-    };
   }
 
   render() {
     return (
       <TextInput
       
-        onChangeText={text => {
-          this.setState({link: text});
-        }}
-        placeholder='Enter Youtube Link'
+        {...this.props}
+        value={this.props.value}
+        onChangeText={this.props.onChangeText}
+        placeholder={this.props.placeholder}
         placeholderTextColor={'grey'}
         style={{
           color: 'black',
@@ -24,8 +21,7 @@ class TextBox extends Component {
           width: 300,
           top: 10,
           borderRadius: 20,
-          height:60
-          
+          height: 60,
         }}
       />
     );
