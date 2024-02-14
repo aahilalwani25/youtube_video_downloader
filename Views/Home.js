@@ -1,6 +1,5 @@
 import React, {Component} from 'react';
 import {View, Text, TouchableOpacity} from 'react-native';
-import CustomAlert from '../components/CustomAlert';
 import styles from '../global/styles/styles';
 import ProfileCard from '../components/ProfileCard';
 import TextBox from '../components/TextBox';
@@ -28,7 +27,6 @@ class Home extends Component {
             style={{
               //flex: 0.07,
               width: '100%',
-
               flexDirection: 'row',
               flexWrap: 'wrap',
               justifyContent: 'space-between',
@@ -76,28 +74,30 @@ class Home extends Component {
               const validPathDomains =
                 /^https?:\/\/(youtu\.be\/|(www\.)?youtube.com\/(embed|v|shorts)\/)/;
               if (!this.props.link.match(validPathDomains)) {
-                this.props.changeToastMessage(true, 'Invalid Link Format', 'error');
-              }
-              // let granted = await this.permissionController.requestPermission();
-              // console.log(granted)
-              // if (granted === PermissionsAndroid.RESULTS.GRANTED) {
-              //   console.log('You can use the camera');
-              // }
-              // if(granted=== PermissionsAndroid.PERMISSIONS.NEVER_ASK_AGAIN){
-              //   this.props.setShowAlert(true)
-              // }
-              else {
+                this.props.changeToastMessage(
+                  true,
+                  'Invalid Link Format',
+                  'error',
+                );
+              } else {
                 const mediaController = new MediaController();
-                const isDownloaded = mediaController
+                mediaController
                   .downloadVideo(this.props.link)
                   .then(res => {
-                    if (isDownloaded) {
-                      this.props.changeToastMessage(
-                        true,
-                        'File Downloaded successfully',
-                        'success',
-                      );
-                    }
+                    this.props.changeToastMessage(
+                      true,
+                      res.message.toString(),
+                      res.type,
+                    );
+                    
+                  })
+                  .catch(error => {
+                    console.error('Error downloading video:', error);
+                    this.props.changeToastMessage(
+                      true,
+                      'An error occurred while downloading video',
+                      'error',
+                    );
                   });
               }
             }}
@@ -109,7 +109,6 @@ class Home extends Component {
               color: 'black',
               backgroundColor: 'blue',
               width: 300,
-
               borderRadius: 40,
               height: 60,
             }}>
