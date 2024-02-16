@@ -51,7 +51,7 @@ export default class MediaController {
       const downloadFilePath = `${RNFS.DownloadDirectoryPath}/${id}.mp4`;
       const galleryPath =
         Platform.select({
-          android: RNFS.CachesDirectoryPath,
+          android: RNFS.DownloadDirectoryPath,
           ios: RNFS.LibraryDirectoryPath,
         }) + '/CameraRoll';
 
